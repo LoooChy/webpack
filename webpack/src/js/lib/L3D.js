@@ -13,112 +13,119 @@
  * my gitgub : https://github.com/LoooChy
  * 
  */
-import L from './L.js';
-import * as THREE from './threeMoudle.js';
-import './OrbitControls.js';
-let _this;
+// import L from './L.js';
+import * as THREE from './three.module.js';
+import { OrbitControls } from '../jsm/controls/OrbitControls.js';
 class L3D {
     constructor(object) {
-        _this = this;
-        _this.scene = new THREE.Scene();
-        _this.params = {
-            box: L.select(object.el),
-            width: object.viewport[0],
-            height: object.viewport[1],
+        this.scene = new THREE.Scene();
+        this.params = {
+            box: document.querySelector(object.el),//容器
+            width: object.viewport[0],//容器宽度
+            height: object.viewport[1],//容器高度
             allMesh: [],
             INTERSECTED: null,
-            allObject: object,
-            clock: new THREE.Clock(),
+            allObject: object,//初始化时所有的对象
+            clock: new THREE.Clock(),//时钟
             controls: null,
             version: 0.1
         }
-        console.log("L3D " + _this.params.version + " DEV");
-        _this.init(object);
-        // console.log(_this);
+        console.log("L3D " + this.params.version + " DEV");
+        this.init(object);
+        // console.log(this);
 
 
     }
 
-    init(object) {
-        _this.initRender(object);
-        _this.initCamera(object);
-        _this.initLight(object);
-        _this.initAxis(object);
-        _this.initObject(object);
-        _this.render(object);
-        _this.bindHandler(object);
+    init = (object) => {
+        this.initRender(object);
+        this.initCamera(object);
+        this.initLight(object);
+        this.initAxis(object);
+        this.initObject(object);
+        this.render(object);
+        this.bindHandler(object);
     }
 
-    initRender(object) {
-        _this.renderer = new THREE.WebGLRenderer({
+    initRender = (object) => {
+        this.renderer = new THREE.WebGLRenderer({
             antialias: object.render.antialias,
             alpha: object.render.alpha,
         });
-        object.render.alpha ? _this.renderer.setClearColor(0xffffff, 0) : _this.renderer.setClearColor(0xffffff, 1);
-        // _this.renderer.shadowMapEnabled = true;
-        _this.renderer.setSize(_this.params.width, _this.params.height);
-        L.select(object.el).append(_this.renderer.domElement);
+        object.render.alpha ? this.renderer.setClearColor(0xffffff, 0) : this.renderer.setClearColor(0xffffff, 1);
+        // this.renderer.shadowMapEnabled = true;
+        this.renderer.setSize(this.params.width, this.params.height);
+        document.querySelector(object.el).append(this.renderer.domElement);
     }
 
-    initCamera(object) {
-        _this.camera = new THREE.PerspectiveCamera(45, _this.params.width / _this.params.height, 1, 1000);
-        _this.camera.position.set(...object.camera.position);
-        object.camera.controls ? _this.params.controls = new THREE.OrbitControls(_this.camera, _this.renderer.domElement) : _this.scene.add(_this.camera);
+    initCamera = (object) => {
+        this.camera = new THREE.PerspectiveCamera(45, this.params.width / this.params.height, 1, 1000);
+        this.camera.position.set(...object.camera.position);
+        object.camera.controls ? this.params.controls = new OrbitControls(this.camera, this.renderer.domElement) : this.scene.add(this.camera);
     }
 
-    initLight() {
+    initLight = (object) => {
 
     }
 
-    initAxis(object) {
+    initAxis = (object) => {
         if (object.axis.isOpen) {
             var axes = new THREE.AxisHelper(object.axis.length);
-            _this.scene.add(axes)
+            this.scene.add(axes)
         }
     }
 
-    initObject() {
+    initObject = (object) => {
+        object.initObject && object.initObject(this, THREE)
+    }
+
+    render = (object) => {
+        this.animate(this);
+        requestAnimationFrame(this.render)
+    }
+
+    animate = (object) => {
+        this.renderer.render(this.scene, this.camera)
+    }
+
+    loaderModle = (object) => {
 
     }
 
-    render() {
-        _this.animate(_this);
-        requestAnimationFrame(_this.render)
-    }
-
-    animate() {
-        _this.renderer.render(_this.scene,_this.camera)
-    }
-
-    loaderModle() {
+    animateFn = (object) => {
 
     }
 
-    animateFn() {
+    bindHandler = (object) => {
 
     }
 
-    bindHandler() {
+    onResize = (object) => {
 
     }
 
-    onResize() {
+    ray = (object) => {
 
     }
 
-    ray() {
+    creatPlanMessage = (object) => {
 
     }
 
-    creatPlanMessage() {
-
+    createCube = (obj) => {
+        const geometry = new THREE.BoxGeometry(obj.attrbuilt);
+        const material = new THREE.MeshBasicMaterial({ 
+            // map: texture 
+            color:obj.color
+        });
+        const mesh = new THREE.Mesh( geometry, material )
+        mesh.name = obj.name
+        // mesh.position.set(0,0,0)
+        mesh.computeBoundingSphere()
+        return mesh
     }
 
-    createBox() {
-
-    }
-
-    createSpehre() {
+    createSpehre = (object) => {
 
     }
 }
