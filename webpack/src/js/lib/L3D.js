@@ -34,8 +34,8 @@ class L3D {
             version: 0.2,
             pointer: new THREE.Vector2(),
             raycaster: new THREE.Raycaster(),
-            fps:object.render.fps,
-            stats:new Stats()
+            fps: object.render.fps,
+            stats: new Stats()
         }
         console.log("L3D " + this.params.version + " DEV");
         this.init(object);
@@ -61,7 +61,7 @@ class L3D {
         this.renderer.shadowMap.enabled = true;
         this.renderer.setSize(this.params.width, this.params.height);
         document.querySelector(object.el).append(this.renderer.domElement);
-        this.params.fps?document.querySelector(object.el).appendChild(this.params.stats.dom):null;
+        this.params.fps ? document.querySelector(object.el).appendChild(this.params.stats.dom) : null;
     }
 
     initCamera = (object) => {
@@ -143,7 +143,7 @@ class L3D {
         this.params.allObject.animateFn && this.params.allObject.animateFn(this)
         this.params.raycaster.setFromCamera(this.params.pointer, this.camera);
         const intersects = this.params.raycaster.intersectObjects(this.scene.children);
-        this.params.fps?this.params.stats.update():null;
+        this.params.fps ? this.params.stats.update() : null;
         if (intersects.length > 0) {
             if (this.params.INTERSECTED != intersects[0].object) {
                 this.params.INTERSECTED = intersects[0].object;
@@ -188,7 +188,7 @@ class L3D {
                 geometry = new THREE.BoxGeometry(...base);
                 break;
             case 'spehre':
-                geometry = new THREE.SphereGeometry(...base);
+                geometry = new THREE.SphereGeometry(...base,30,30,30);
                 break;
             case 'plane':
                 geometry = new THREE.PlaneGeometry(...base);
@@ -232,19 +232,22 @@ class L3D {
         let mesh;
         if (objType === 'point') {
             mesh = new THREE.Points(geometry, material);
+            mesh.position.set(0,0,0);
         } else if (objType === 'sprite') {
             mesh = new THREE.Sprite(material);
+            mesh.position.set(...position);
             mesh.scale.set(...base);
         } else if (objType === 'line') {
-            console.log(geometry, "geometrygeometry")
             mesh = new Line2(geometry, material);
+            mesh.position.set(...position);
         } else {
             mesh = new THREE.Mesh(geometry, material);
+            mesh.position.set(...position);
         }
         mesh.name = name;
         mesh.castShadow = castShadow ? true : false;
         mesh.receiveShadow = receiveShadow ? true : false;
-        mesh.position.set(...position);
+
         return mesh;
     }
 
@@ -272,7 +275,7 @@ class L3D {
         return this.scene.children;
     }
 }
-
+window.L3D = L3D;
 export default L3D
 
 // TODO加载模型

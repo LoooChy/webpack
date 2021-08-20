@@ -5,9 +5,11 @@ import './css/style.scss';
 // import './css/content.scss';
 
 //js
-import './js/lib/jquery.js';
+// import './js/lib/jquery.js';
 
-import './js/test_model.js';
+// import './js/test_model.js';
+
+import './js/points.js';
 
 
 

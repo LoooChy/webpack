@@ -156,7 +156,7 @@ const a = new L3D({
 
         const line = L.create3Dobj({
             objType: 'line',
-            base:[0,0,0,100,50,1],
+            base:[0,0,0,100,50,1,60,70,50],
             position: [-50, 20, 10],
             name: 'line1',
             materialObj: {
@@ -177,8 +177,9 @@ const a = new L3D({
     },
     bindHandlerFn: (L) => {
         document.addEventListener('click', () => {
-            console.log(L.getCurrentObj(),"currentObj");
-            console.log(L.getAllObj(),"getAllObj");
+            // console.log(L.getCurrentObj(),"currentObj");
+            // console.log(L.getAllObj(),"getAllObj");
+            console.log(L.getGeometry('line1').getPoints(10))
         });
     }
 })
