@@ -188,13 +188,16 @@ class L3D {
                 geometry = new THREE.BoxGeometry(...base);
                 break;
             case 'spehre':
-                geometry = new THREE.SphereGeometry(...base,30,30,30);
+                geometry = new THREE.SphereGeometry(...base, 30, 30, 30);
+                break;
+            case 'halfSpehre':
+                geometry = new THREE.SphereGeometry(...base, 30, 30, 0, Math.PI * 2, 0, Math.PI / 2);
                 break;
             case 'plane':
                 geometry = new THREE.PlaneGeometry(...base);
                 break;
             case 'point':
-                geometry = this.getPoint(position, color);
+                geometry = this.getBufferGeometry(position, color);
                 break;
             case 'line':
                 geometry = new LineGeometry();
@@ -205,7 +208,7 @@ class L3D {
         }
         switch (materiaType) {
             case 'basic':
-                material = new THREE.MeshBasicMaterial({ map: texture ? texture[0] : undefined, color: color, wireframe: wireframe ? true : false });
+                material = new THREE.MeshBasicMaterial({ map: texture ? texture[0] : undefined, color: color, wireframe: wireframe ? true : false, opacity: opacity, transparent: transparent });
                 break;
             case 'phong':
                 material = new THREE.MeshPhongMaterial({ map: texture ? texture[0] : undefined, color: color, shininess: 100, opacity: opacity, transparent: transparent, wireframe: wireframe ? true : false });
@@ -232,14 +235,20 @@ class L3D {
         let mesh;
         if (objType === 'point') {
             mesh = new THREE.Points(geometry, material);
-            mesh.position.set(0,0,0);
+            mesh.position.set(0, 0, 0);
         } else if (objType === 'sprite') {
             mesh = new THREE.Sprite(material);
             mesh.position.set(...position);
             mesh.scale.set(...base);
         } else if (objType === 'line') {
-            mesh = new Line2(geometry, material);
-            mesh.position.set(...position);
+            if (linewidth === 1) {
+                mesh = new THREE.Line(geometry, material);
+                mesh.position.set(...position);
+            } else {
+                mesh = new Line2(geometry, material);
+                mesh.position.set(...position);
+            }
+
         } else {
             mesh = new THREE.Mesh(geometry, material);
             mesh.position.set(...position);
@@ -261,7 +270,7 @@ class L3D {
     getCurrentObj = () => {
         return this.params.INTERSECTED;
     }
-    getPoint = (position, color) => {
+    getBufferGeometry = (position, color) => {
         const geometry = new THREE.BufferGeometry();
         geometry.setAttribute('position', new THREE.Float32BufferAttribute(position, 3));
         geometry.setAttribute('color', new THREE.Float32BufferAttribute(new THREE.Color(color), 3));

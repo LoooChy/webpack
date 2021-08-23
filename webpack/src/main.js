@@ -9,7 +9,8 @@ import './css/style.scss';
 
 // import './js/test_model.js';
 
-import './js/points.js';
+// import './js/points.js';
+import './js/png.js'
 
 
 
